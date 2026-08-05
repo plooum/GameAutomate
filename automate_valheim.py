@@ -170,9 +170,10 @@ class Actions :
     def relacher_proteger(self):
         self.inputs.souris_clic_droit()
 
-    def attaquer(self, attente):
+    def cliquer(self, attente = 0.1):
         self.inputs.souris_clic_gauche(attente)
-    cliquer = attaquer
+    attaquer = cliquer
+    planter = cliquer
 
     def manger(self):
         self.inputs.clavier_appuie('è')
@@ -189,9 +190,6 @@ class Actions :
 
     def activer_desactiver_marcher_lentement(self):
         self.inputs.clavier_appuie('c')
-
-    def planter(self):
-        self.inputs.souris_clic_gauche(0.1)
 
     def initialiser_sens_demie_tour(self):
         self.direction_demie_tour = 1
