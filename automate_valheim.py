@@ -4,7 +4,7 @@ import subprocess
 from pynput.mouse import Button, Controller as MouseController
 from pynput.keyboard import Key, Controller as KeyboardController, Listener, KeyCode
 from itertools import cycle
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import os
 
 NOMBRE_PIXEL_DEMI_TOUR_HORIZONTAL = 3600
@@ -203,11 +203,13 @@ class Actions :
         self.inputs.deplacer_souris(dx=int(self.nb_px_demi_tour)*self.direction_demie_tour, dy=0)
 
     def demi_tour_sens_alterne(self, avance_sens_horaire = 1, avance_sens_antihoraire = 0.3):
-        self.time.attendre(0.5)
+        self.attendre(0.2)
         self.quart_de_tour()
         self.avancer(avance_sens_horaire if self.direction_demie_tour > 0 else avance_sens_antihoraire)
         self.quart_de_tour()
+        self.reculer(1 if self.direction_demie_tour > 0 else 0.5)
         self.direction_demie_tour = self.direction_demie_tour * -1
+        self.attendre(0.2)
 
     def baisser_monter_camera(self):
         self.inputs.deplacer_souris(dx = 0, dy = self.nb_px_quart_tour_vertical * self.direction_baisser_monter_camera)
@@ -306,7 +308,7 @@ class Looper:
 
 class SettingsJardin:
     def __init__(self):
-        self.jardin_taille_rangee = 20
+        self.jardin_taille_rangee = 30
         self.jardin_nb_total = 200
         self.cycleur_jardin_rangee = cycle([3,5,10,15,20,30,50])
         self.cycleur_jardin_total = cycle([5,9,50,100,150,200,500,1000,1500,2000])
