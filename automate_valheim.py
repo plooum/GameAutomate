@@ -426,7 +426,9 @@ class Program:
   - Nécessite un logiciel externe : xdotool sous Linux
   - python3-pynput
  
- Notes : pour un fonctionnement sous Windows ou Mac, il faudra adapter la méthode Inputs.deplacer_souris_xdotool
+ Notes : 
+  - Pour un fonctionnement sous Windows ou Mac, il faudra adapter la méthode Inputs.deplacer_souris_xdotool
+  - Fonctionne en AZERTU, il faut modifier la class Actions si nécessaire
  
 [Premier Lancement]
 En haut de ce script :
