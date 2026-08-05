@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "pydirectinput>=1.0.4",
+#     "pynput>=1.8.2",
+# ]
+# ///
 import time
 import threading
 import subprocess
