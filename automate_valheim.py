@@ -7,6 +7,13 @@ from itertools import cycle
 from abc import abstractmethod
 import os
 
+import platform
+
+# Optionnel : Import conditionnel pour éviter une erreur sous Linux
+if platform.system() == "Windows":
+    import pydirectinput
+    pydirectinput.FAILSAFE = False
+
 NOMBRE_PIXEL_DEMI_TOUR_HORIZONTAL = 3600
 NOMBRE_PIXEL_QUART_TOUR_VERTICAL = 1600
 POS_BTN_REPARER_X = 860
@@ -54,46 +61,62 @@ class Event:
         for handler in self._handlers:
             handler(*args, **kwargs)
 
-class Inputs:
-    def __init__(self, keyboard, mouse, time: TimeSleepCancellable,vitesse_souris = 30):
-        self.keyboard = keyboard
-        self.mouse = mouse
-        self.vitesse_souris = vitesse_souris
-        self.time = time
+class MouseMoverController:
+    @abstractmethod
+    def move(self, dx, dy):
+        pass
 
-    def deplacer_souris(self, dx, dy):
+class MouseControllerXdotool(MouseMoverController):
+    def __init__(self, vitesse_souris = 30):
+        self.vitesse_souris = vitesse_souris
+
+    def move(self, dx, dy):
         self.deplacer_souris_x(dx)
         self.deplacer_souris_y(dy)
 
-    def deplacer_souris_xdotool(self, dx, dy):
-        try:
-            subprocess.run(["xdotool", "mousemove_relative", "--", str(dx), str(dy)])
-        except Exception as e:
-            print(f"[-] Erreur xdotool: {e}")
-
     def deplacer_souris_x(self, d):
-        reverse = 1 if d > 0 else -1
-        nb_steps = int(abs(d) / self.vitesse_souris)
-        
-        for i in range(nb_steps):
-            self.deplacer_souris_xdotool(self.vitesse_souris * reverse, 0)
-
-        mod = abs(d) % self.vitesse_souris
-        if(mod != 0):
-            self.deplacer_souris_xdotool(mod * reverse, 0)
-        
-        self.time.attendre(0.1)
-
+            reverse = 1 if d > 0 else -1
+            nb_steps = int(abs(d) / self.vitesse_souris)
+            
+            for i in range(nb_steps):
+                self.run_process(self.vitesse_souris * reverse, 0)
+    
+            mod = abs(d) % self.vitesse_souris
+            if(mod != 0):
+                self.run_process(mod * reverse, 0)
+            
+            time.sleep(0.1)
+    
     def deplacer_souris_y(self, d): 
         reverse = 1 if d > 0 else -1
         nb_steps = int(abs(d) / self.vitesse_souris)
         
         for i in range(nb_steps):
-            self.deplacer_souris_xdotool(0, self.vitesse_souris * reverse)
+            self.run_process(0, self.vitesse_souris * reverse)
 
         mod = abs(d) % self.vitesse_souris
         if(mod != 0):
-            self.deplacer_souris_xdotool(0, mod * reverse)
+            self.run_process(0, mod * reverse)
+
+    def run_process(self, dx, dy):
+        subprocess.run(['xdotool', 'mousemove_relative', '--', str(dx), str(dy)])
+
+class MouseControllerPydirectinput(MouseMoverController):
+    def move(self, dx, dy):
+        pydirectinput.moveRel(int(dx), int(dy), relative=True)
+
+class Inputs:
+    def __init__(self, keyboard, mouse, mouse_mover: MouseMoverController, time: TimeSleepCancellable):
+        self.keyboard = keyboard
+        self.mouse = mouse
+        self.mouse_mover = mouse_mover
+        self.time = time
+
+    def deplacer_souris(self, dx, dy):
+        try:
+            self.mouse_mover.move(dx, dy)
+        except Exception as e:
+            print(f"[-] Erreur déplacement souris : {e}")
 
         self.time.attendre(0.1)
 
@@ -326,7 +349,9 @@ class Program:
     def __init__(self):
         self.looper_controler = LooperControler()
         self.time = TimeSleepCancellable(self.looper_controler)
-        self.actions = Actions(Inputs(KeyboardController(), MouseController(), self.time), self.time)
+        mouse = MouseController()
+        mouse_mover = MouseControllerPydirectinput() if platform.system() == "Windows" else MouseControllerXdotool()
+        self.actions = Actions(Inputs(KeyboardController(), mouse, mouse_mover, self.time), self.time)
         self.settings_jardin = SettingsJardin()
         self.looper = Looper(self.looper_controler, cycle(self.__build_cycleur_automates()))
         self.__print_prompt()
@@ -393,7 +418,7 @@ class Program:
         ]
 
     def on_keyboard_press(self, key):
-        if key == Key.f8 or key == KeyCode.from_vk(0x77):
+        if key == Key.f8:
             self.looper.arreter_boucles()
 
         elif key == Key.f7:
@@ -427,8 +452,8 @@ class Program:
   - python3-pynput
  
  Notes : 
-  - Pour un fonctionnement sous Windows ou Mac, il faudra adapter la méthode Inputs.deplacer_souris_xdotool
-  - Fonctionne en AZERTU, il faut modifier la class Actions si nécessaire
+  - Pour un fonctionnement sous Windows ou Mac, il faudra ajouter un MouseMoverController spécifique à la plateforme
+  - Fonctionne en AZERTY, il faut modifier la class Actions si nécessaire
  
 [Premier Lancement]
 En haut de ce script :
