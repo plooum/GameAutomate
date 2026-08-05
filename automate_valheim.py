@@ -231,11 +231,8 @@ class LooperControler(CancelToken):
         return self.stop_requested
 
     def action_autorise(self,n, autoriser_premiere_boucle = False):
-        if(self.num_boucle == 0):
-            if(autoriser_premiere_boucle):
-                return True
-            else:
-                return False
+        if(self.num_boucle == 0 and not autoriser_premiere_boucle):
+            return False
         else:
             return self.num_boucle % n == 0
 
@@ -258,13 +255,6 @@ class Looper:
         self.thread_loop = None
         self.looper_controler.num_boucle = 0
         self.looper_controler.on_stop.subscribe(self.arreter_boucles)
-
-    def action_autorise(self, n, autoriser_premiere_boucle = False):
-        if(self.looper_controler.num_boucle == 0 and not autoriser_premiere_boucle):
-            return False
-        
-        if(self.looper_controler.num_boucle % n == 0):
-            return True
 
     def farm_loop(self):
         print("[+] Boucle d'actions ACTIVÉE")
@@ -327,7 +317,7 @@ class SettingsJardin:
     def changer_taille_totale(self):
         self.jardin_nb_total = next(self.cycleur_jardin_total)
 
-    def str(self):
+    def __str__(self):
         return f"""Nombre d'actions par rangées : {self.jardin_taille_rangee}
 Nombre d'actions totales : {self.jardin_nb_total}
 """
@@ -397,8 +387,6 @@ class Program:
                                                         action_post =  self.actions.activer_desactiver_marcher_lentement),
                     lambda: self.looper_controler.action_toutes_les_n_boucles(10, 
                                                         action = lambda: self.time.attendre(5)),
-                    lambda: self.looper_controler.action_toutes_les_n_boucles(200, 
-                                                        action = self.looper_controler.arreter_boucles),
                     lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings_jardin.jardin_nb_total, 
                                                         action = self.looper_controler.arreter_boucles)
                 ])
@@ -479,7 +467,7 @@ F11 : Déplacer la souris sur le bouton réparer
 
 """)
         print(f"[i] Automate en cours : {self.looper.automate_en_cours.name}")
-        print(f"[i] Paramètrage Jardin : {os.linesep}{self.settings_jardin.str()}")
+        print(f"[i] Paramètrage Jardin : {os.linesep}{self.settings_jardin}")
 
 program = Program()
 
