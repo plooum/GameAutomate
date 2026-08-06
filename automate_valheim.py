@@ -16,15 +16,31 @@ import os
 
 import platform
 
-# Optionnel : Import conditionnel pour éviter une erreur sous Linux
 if platform.system() == "Windows":
     import pydirectinput
     pydirectinput.FAILSAFE = False
 
+# Souris
 NOMBRE_PIXEL_DEMI_TOUR_HORIZONTAL = 3600
 NOMBRE_PIXEL_QUART_TOUR_VERTICAL = 1600
 POS_BTN_REPARER_X = 860
 POS_BTN_REPARER_Y = -245
+
+# Clavier
+TOUCHE_UTILISER = "e"
+TOUCHE_AVANCER = "z"
+TOUCHE_RECULER = "s"
+TOUCHE_MARCHER_LENTEMENT = "c"
+TOUCHE_ITEM_1 = "&"
+TOUCHE_ITEM_2 = "é"
+TOUCHE_ITEM_3 = '"'
+TOUCHE_ITEM_4 = "'"
+TOUCHE_ITEM_5 = "("
+TOUCHE_ITEM_6 = "-"
+TOUCHE_ITEM_7 = "è"
+TOUCHE_ITEM_8 = "_"
+TOUCHE_ULTI = "f"
+
 
 class ActionHelper:
     def executer_action(action):
@@ -151,7 +167,20 @@ class Actions :
                  nb_px_demi_tour = NOMBRE_PIXEL_DEMI_TOUR_HORIZONTAL, 
                  nb_px_quart_tour_vertical = NOMBRE_PIXEL_QUART_TOUR_VERTICAL,
                  pos_btn_reparer_x = POS_BTN_REPARER_X,
-                 pos_btn_reparer_y = POS_BTN_REPARER_Y):
+                 pos_btn_reparer_y = POS_BTN_REPARER_Y,
+                 touche_utiliser = TOUCHE_UTILISER,
+                 touche_avancer = TOUCHE_AVANCER,
+                 touche_reculer = TOUCHE_RECULER,
+                 touche_marcher_lentement = TOUCHE_MARCHER_LENTEMENT,
+                 touche_item_1 = TOUCHE_ITEM_1,
+                 touche_item_2 = TOUCHE_ITEM_2,
+                 touche_item_3 = TOUCHE_ITEM_3,
+                 touche_item_4 = TOUCHE_ITEM_4,
+                 touche_item_5 = TOUCHE_ITEM_5,
+                 touche_item_6 = TOUCHE_ITEM_6,
+                 touche_item_7 = TOUCHE_ITEM_7,
+                 touche_item_8 = TOUCHE_ITEM_8,
+                 touche_ulti = TOUCHE_ULTI):
         self.inputs = inputs
         self.direction_demie_tour = 1
         self.nb_px_demi_tour = nb_px_demi_tour
@@ -161,6 +190,19 @@ class Actions :
         self.recolter = self.planter
         self.direction_baisser_monter_camera = 1
         self.time = time
+        self.touche_utiliser = touche_utiliser
+        self.touche_avancer = touche_avancer
+        self.touche_reculer = touche_reculer
+        self.touche_marcher_lentement = touche_marcher_lentement
+        self.touche_item_1 = touche_item_1
+        self.touche_item_2 = touche_item_2
+        self.touche_item_3 = touche_item_3
+        self.touche_item_4 = touche_item_4
+        self.touche_item_5 = touche_item_5
+        self.touche_item_6 = touche_item_6
+        self.touche_item_7 = touche_item_7
+        self.touche_item_8 = touche_item_8
+        self.touche_ulti = touche_ulti
 
     def attendre(self, attente):
         self.time.attendre(attente)
@@ -185,11 +227,11 @@ class Actions :
         self.avancer(4)
 
     def utiliser(self):
-        self.inputs.clavier_appuie('e')
+        self.inputs.clavier_appuie(self.touche_utiliser)
 
     def equiper_desequiper_armes(self):
-        self.inputs.clavier_appuie("'")
-        self.inputs.clavier_appuie('"')
+        self.inputs.clavier_appuie(self.touche_item_3)
+        self.inputs.clavier_appuie(self.touche_item_4)
 
     def proteger(self, attente = 0):
         if(attente > 0):
@@ -206,20 +248,20 @@ class Actions :
     planter = cliquer
 
     def manger(self):
-        self.inputs.clavier_appuie('è')
-        self.inputs.clavier_appuie('_')
+        self.inputs.clavier_appuie(self.touche_item_7)
+        self.inputs.clavier_appuie(self.touche_item_8)
 
     def ulti(self):
-        self.inputs.clavier_appuie('f')
+        self.inputs.clavier_appuie(self.touche_ulti)
 
     def avancer(self, attente):
-        self.inputs.clavier_appuie('z',attente)
+        self.inputs.clavier_appuie(self.touche_avancer,attente)
 
     def reculer(self, attente):
-        self.inputs.clavier_appuie('s',attente)
+        self.inputs.clavier_appuie(self.touche_reculer,attente)
 
     def activer_desactiver_marcher_lentement(self):
-        self.inputs.clavier_appuie('c')
+        self.inputs.clavier_appuie(self.touche_marcher_lentement)
 
     def initialiser_sens_demie_tour(self):
         self.direction_demie_tour = 1
