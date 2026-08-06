@@ -1,4 +1,4 @@
-# ⚔️ Game Automation Tools
+# ⚔️ Valheim Automation Tools
 
 Script Python d'automatisation des tâches répétitives pour **Valheim**.
 
@@ -6,7 +6,7 @@ Script Python d'automatisation des tâches répétitives pour **Valheim**.
 
 ## 📌 Fonctionnalités
 
-- 🤺 **XP des armes :** Entraînement automatique face à un mannequin d'entraînement.
+- 🗡️ **XP des armes :** Entraînement automatique face à un mannequin d'entraînement.
 - 🌱 **Jardinage automatique :** Plantation et récolte des cultures.
 
 ---
