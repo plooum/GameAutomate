@@ -74,6 +74,14 @@ TOUCHE_ULTI               = "f"
 
 ---
 
+## ⛏️ Mise en place du terrain
+- Préparez un couloir d'environ 12m de long en terre (à l'aide de la houe) pour monter des murs indestructibles.
+- Fermez une extrémité du couloir avec un mur en terre.
+- Mettez un mannequin face au couloir et dos à ce mur.
+![Couloir](docs/images/couloir.jpg)
+- Du côté ouvert, faites un entonnoire avec 2 ou 3 poutres de bois et placez une forge (ou autre établi permettant de réparer vos armes).
+![Couloir](docs/images/forge.jpg)
+
 ## 🎯 Premier Lancement (Calibrage)
 
 Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris et les coordonnées du bouton réparer de la forge en modifiant les variables en haut du script :
@@ -95,14 +103,6 @@ Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris
 ## 📖 Modes d'Utilisation
 
 ### 🗡️ Mode Farming des Armes
-#### Prérequis :
-- Préparez un couloir d'environ 12m de long en terre (à l'aide de la houx) pour monter des murs indestructibles.
-- Fermez une extrémité du couloir avec un mur en terre.
-- Mettez un mannequin face au couloir et dos à ce mur.
-![Couloir](docs/images/couloir.jpg)
-- Du côté ouvert, faites un entonnoire avec 2 ou 3 poutres de bois et placez une forge (ou autre établi permettant de réparer vos armes).
-![Couloir](docs/images/forge.jpg)
-
 #### Préparation de l'inventaire :
 - Placez vos **armes** dans les slots **`3`** et **`4`**.
   - *Arme à une main :* Mettez une seule arme en `3` ou `4` et laissez l'autre slot vide.
