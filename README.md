@@ -142,6 +142,7 @@ Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris
 | <kbd>F6</kbd> | **Test Demi-tour** | Effectue un demi-tour à 180° (pour tester la calibration). |
 | <kbd>F10</kbd> | **Test Regard** | Alterne le regard entre l'horizon et les pieds (pour tester la calibration). |
 | <kbd>F11</kbd> | **Test Réparation** | Déplace la souris sur le bouton Réparer de la forge (pour tester la calibration). |
+| <kbd>ctrl</kbd>+<kbd>c</kbd> | **Quitter** | Quitte le script. |
 
 ---
 

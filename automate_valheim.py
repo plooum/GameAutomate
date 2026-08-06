@@ -272,7 +272,7 @@ class Actions :
     def demi_tour(self):
         self.inputs.deplacer_souris(dx=int(self.nb_px_demi_tour)*self.direction_demie_tour, dy=0)
 
-    def demi_tour_sens_alterne(self, avance_sens_horaire = 1, avance_sens_antihoraire = 0.3):
+    def demi_tour_sens_alterne(self, avance_sens_horaire = 1.3, avance_sens_antihoraire = 0.6):
         self.attendre(0.2)
         self.quart_de_tour()
         self.avancer(avance_sens_horaire if self.direction_demie_tour > 0 else avance_sens_antihoraire)
@@ -531,15 +531,16 @@ En haut de ce script :
 
 Liste des commandes :
  - Pilotage de l'automate
-F8  : Démarrer / Arrêter l'automatisation
-F7  : Changer d'automate
+F8      : Démarrer / Arrêter l'automatisation
+F7      : Changer d'automate
  - Changement des réglages
-F3  : Jardin - Changer le nombre d'actions par rangée (défaut:{self.settings_jardin.jardin_taille_rangee})
-F4  : Jardin - Changer le nombre d'actions total (défaut:{self.settings_jardin.jardin_nb_total})
+F3      : Jardin - Changer le nombre d'actions par rangée (défaut:{self.settings_jardin.jardin_taille_rangee})
+F4      : Jardin - Changer le nombre d'actions total (défaut:{self.settings_jardin.jardin_nb_total})
  - Tests et positionnement
-F6  : Demie tour
-F10 : Lever / baisser le regard
-F11 : Déplacer la souris sur le bouton réparer
+F6      : Demie tour
+F10     : Lever / baisser le regard
+F11     : Déplacer la souris sur le bouton réparer
+Ctrl+C  : Quitter le script
 
 """)
         print(f"[i] Automate en cours : {self.looper.automate_en_cours.name}")
