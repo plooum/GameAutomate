@@ -1,4 +1,4 @@
-# ⚔️ Valheim Automation Tools
+# ⚔️ Game Automation Tools
 
 Script Python d'automatisation des tâches répétitives pour **Valheim**.
 
@@ -142,3 +142,98 @@ Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris
 | <kbd>F6</kbd> | **Test Demi-tour** | Effectue un demi-tour à 180° (pour tester la calibration). |
 | <kbd>F10</kbd> | **Test Regard** | Alterne le regard entre l'horizon et les pieds (pour tester la calibration). |
 | <kbd>F11</kbd> | **Test Réparation** | Déplace la souris sur le bouton Réparer de la forge (pour tester la calibration). |
+
+---
+
+# **Avancé**
+
+# Guide d'utilisation et d'extension des Automates Valheim
+
+Ce document explique comment les suites d'action sont enregistrées dans le script python et la méthode pas à pas pour en ajouter de nouvelles.
+
+---
+
+## 1. Comment sont enregistrées les suites d'action
+
+Les suites d'action sont structurées sous forme d'**automates** grâce à la classe `Automate`. Chaque automate prend un nom et trois listes de fonctions exécutées séquentiellement (généralement définies via des expressions `lambda`) :
+
+* **`actions_pre`** : Actions d'initialisation exécutées **une seule fois** au lancement de l'automate.
+* **`actions_loop`** : Actions exécutées **en boucle principale** tant que l'automate est actif.
+* **`actions_post`** : Actions de nettoyage exécutées **une seule fois** à l'arrêt de l'automate.
+
+Dans le code, l'enregistrement se fait au niveau de la méthode `__build_automates()` au sein de la classe `Program` :
+
+```python
+Automate("Nom_De_L_Automate",
+    [ # Actions PRE (Ex: préparation, nourriture, posture initiales)
+        lambda: self.actions.manger(),
+    ],
+    [ # Actions LOOP (Ex: cycle principal d'attaque, récolte, réparation)
+        lambda: self.actions.attaquer(2),
+        # L'action "reparer" est effectué une fois toutes les 5 boucles
+        lambda: self.looper_controler.action_toutes_les_n_boucles(5, action=self.actions.reparer),
+    ],
+    [ # Actions POST (Ex: recul de sécurité, déséquipement)
+        lambda: self.actions.reculer(4),
+    ]
+)
+```
+
+---
+
+## 2. Comment ajouter une nouvelle suite d'actions
+
+Pour ajouter une nouvelle routine automatisée (par exemple pour la pêche, le minage ou l'artisanat), suivez ces 3 étapes :
+
+### Étape 1 : (Optionnel) Définir de nouvelles actions de base
+Si votre routine nécessite une action non encore couverte par le script, ajoutez une méthode dédiée dans la classe `Actions`.
+
+*Exemple :*
+```python
+def pecher(self):
+    # Maintenir le clic gauche pendant 1 secondes pour lancer la ligne
+    self.inputs.cliquer(1.0)
+
+def equiper_canne(self):
+    # On équipe le premier item
+    self.inputs.clavier_appuie(self.touche_item_1)
+
+def ramener_canne(self):
+    # Maintenir le clic droit pendant 5 secondes pour lancer la ligne
+    self.inputs.souris_clic_droit(5)
+```
+
+### Étape 2 : Déclarer le nouvel automate
+Ajoutez une nouvelle instance d' `Automate` dans la liste retournée par `__build_automates()` dans la classe `Program`.
+
+*Exemple :*
+```python
+def __build_automates(self):
+    return [
+        # ... Automates existants (Armes, Jardin - Plantation, Jardin - Recolte) ... ,
+        
+        Automate("Peche",
+            [ # Pre: Équiper la canne à pêche (objet en slot 1)
+                lambda: self.actions.equiper_canne(),
+            ],
+            [ # Loop: Lancer la ligne et attendre
+                # Lancer la canne
+                lambda: self.actions.pecher(),
+                # Attendre 10 secondes qu'un poisson arrive
+                lambda: self.time.attendre(10),
+                # Rammerner la canne (avec un poisson si vous avez de la chance)
+                lambda: self.actions.ramener_canne(),
+                # Attendre 10 secondes pour récupérer l'endurance
+                lambda: self.time.attendre(10),
+            ],
+            [ # Post: Pause de fin de séquence
+                lambda: self.actions.attendre(1),
+            ]
+        )
+    ]
+```
+
+### Étape 3 : Exécuter et tester en jeu
+1. Lancez le script Python (`python automate_valheim.py`).
+2. Appuyez sur **F7** dans le jeu pour faire défiler les modes jusqu'à sélectionner votre nouvel automate (`[+] Changement de mode : Peche`).
+3. Appuyez sur **F8** pour **Démarrer / Arrêter** la boucle d'actions.

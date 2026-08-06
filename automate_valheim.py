@@ -402,10 +402,10 @@ class Program:
         mouse_mover = MouseControllerPydirectinput() if platform.system() == "Windows" else MouseControllerXdotool()
         self.actions = Actions(Inputs(KeyboardController(), mouse, mouse_mover, self.time), self.time)
         self.settings_jardin = SettingsJardin()
-        self.looper = Looper(self.looper_controler, cycle(self.__build_cycleur_automates()))
+        self.looper = Looper(self.looper_controler, cycle(self.__build_automates()))
         self.__print_prompt()
 
-    def __build_cycleur_automates(self):
+    def __build_automates(self):
         return [
             Automate("Armes", 
                 [
