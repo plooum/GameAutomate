@@ -219,7 +219,7 @@ def __build_automates(self):
             [ # Loop: Lancer la ligne et attendre
                 # Lancer la canne
                 lambda: self.actions.pecher(),
-                # Attendre 10 secondes qu'un poisson arrive
+                # Attendre 10 secondes qu'un poisson arrive (utiliser self.time qui est interruptible)
                 lambda: self.time.attendre(10),
                 # Rammerner la canne (avec un poisson si vous avez de la chance)
                 lambda: self.actions.ramener_canne(),
