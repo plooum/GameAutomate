@@ -290,6 +290,7 @@ self.looper_controler.action_toutes_les_n_boucles(
 
 ### self.settings.*
  Ce sont les paramètres permettant d'ajuster, par exemple, la taille du jardin à planter sans avoir à modifier et redémarrer le script.
+ 
  Pour ajouter un paramètre, ajoutez-le dans la classe Settings. Ils sera accessible via "self.settings.nom_du_nouveau_parametre" dans la classe Program.
  Ajoutez une méthode pour le modifier (via un cycle par exemple)
 
