@@ -30,7 +30,7 @@ Ce projet utilise **`uv`** pour la gestion de l'environnement virtuel et des dé
 
 ---
 
-## 🚀 Lancement de l'automate
+## 🚀 Lancement du script
 
 Utilisez les scripts fournis à la racine du projet selon votre système d'exploitation :
 
