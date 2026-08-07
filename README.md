@@ -1,7 +1,12 @@
 # ⚔️ Valheim Automation Tools
 
 Script Python d'automatisation des tâches répétitives pour **Valheim**.
+
 Simule les entrées clavier et souris.
+
+Pourrait s'adapter à d'autres jeux.
+
+Testé uniquement sur Valheim.
 
 ---
 
