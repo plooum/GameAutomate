@@ -21,14 +21,14 @@ Testé uniquement sur Valheim.
 
 ### 1. Outils système & Python
 #### Linux (Testé sous Mint)
-- **`xdotool`** : Gestion des interactions système sous Linux.
+- **`xdotool`** : Utilisé pour les déplacements de la souris sous Linux.
   ```bash
   sudo apt install xdotool
   ```
-- Module python **`pynput`** : Emission d'événements clavier/souris (géré par uv).
+- Module python **`pynput`** : Emission d'événements clavier/souris (appui des touches clavier et clic des boutons souris) (géré par uv).
 #### Windows
-- Module python **`pynput`** : Emission des événements clavier/souris (géré par uv).
-- Module python **`pydirectinput`** : Emission des événements souris (géré par uv).
+- Module python **`pynput`** : Emission d'événements clavier/souris (appui des touches clavier et clic des boutons souris) (géré par uv).
+- Module python **`pydirectinput`** : Déplacement de la souris sous Windows (géré par uv).
 
 ### 2. Gestionnaire de projet (`uv`)
 Ce projet utilise **`uv`** pour la gestion de l'environnement virtuel et des dépendances.
