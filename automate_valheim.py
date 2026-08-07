@@ -376,7 +376,7 @@ class Looper:
                 self.automate_en_cours = next(self.cycleur_automate)
             print(f"[+] Changement de mode : {self.automate_en_cours.name}")
 
-class SettingsJardin:
+class Settings:
     def __init__(self):
         self.jardin_taille_rangee = 30
         self.jardin_nb_total = 200
@@ -401,7 +401,7 @@ class Program:
         mouse = MouseController()
         mouse_mover = MouseControllerPydirectinput() if platform.system() == "Windows" else MouseControllerXdotool()
         self.actions = Actions(Inputs(KeyboardController(), mouse, mouse_mover, self.time), self.time)
-        self.settings_jardin = SettingsJardin()
+        self.settings = Settings()
         self.looper = Looper(self.looper_controler, cycle(self.__build_automates()))
         self.__print_prompt()
 
@@ -437,12 +437,12 @@ class Program:
                 ],
                 [
                     lambda: self.actions.planter(),
-                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings_jardin.jardin_taille_rangee, 
+                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings.jardin_taille_rangee, 
                                                         action = self.actions.demi_tour_sens_alterne, 
                                                         action_sinon = lambda: self.actions.avancer(0.8)),
                     lambda: self.looper_controler.action_toutes_les_n_boucles(10, 
                                                         action = lambda: self.time.attendre(5)),
-                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings_jardin.jardin_nb_total, 
+                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings.jardin_nb_total, 
                                                         action = self.looper_controler.arreter_boucles)
                 ],
                 [
@@ -454,14 +454,14 @@ class Program:
                 ],
                 [
                     lambda: self.actions.recolter(),
-                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings_jardin.jardin_taille_rangee, 
+                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings.jardin_taille_rangee, 
                                                         action = lambda: self.actions.demi_tour_sens_alterne(1.8, 1.5), 
                                                         action_sinon = lambda: self.actions.avancer(1.1), 
                                                         action_pre = self.actions.activer_desactiver_marcher_lentement,  
                                                         action_post =  self.actions.activer_desactiver_marcher_lentement),
                     lambda: self.looper_controler.action_toutes_les_n_boucles(10, 
                                                         action = lambda: self.time.attendre(5)),
-                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings_jardin.jardin_nb_total, 
+                    lambda: self.looper_controler.action_toutes_les_n_boucles(self.settings.jardin_nb_total, 
                                                         action = self.looper_controler.arreter_boucles)
                 ])
         ]
@@ -478,12 +478,12 @@ class Program:
                 self.actions.demi_tour()
 
         elif key == Key.f3:
-            self.settings_jardin.changer_taille_rangee()
-            print(f"[i] Changer la taille des rangées : {self.settings_jardin.jardin_taille_rangee}")
+            self.settings.changer_taille_rangee()
+            print(f"[i] Changer la taille des rangées : {self.settings.jardin_taille_rangee}")
 
         elif key == Key.f4:
-            self.settings_jardin.changer_taille_totale()
-            print(f"[i] Changer la taille totale du jardin : {self.settings_jardin.jardin_nb_total}")
+            self.settings.changer_taille_totale()
+            print(f"[i] Changer la taille totale du jardin : {self.settings.jardin_nb_total}")
 
         elif key == Key.f10:
             self.actions.baisser_monter_camera()
@@ -534,8 +534,8 @@ Liste des commandes :
 F8      : Démarrer / Arrêter l'automatisation
 F7      : Changer d'automate
  - Changement des réglages
-F3      : Jardin - Changer le nombre d'actions par rangée (défaut:{self.settings_jardin.jardin_taille_rangee})
-F4      : Jardin - Changer le nombre d'actions total (défaut:{self.settings_jardin.jardin_nb_total})
+F3      : Jardin - Changer le nombre d'actions par rangée (défaut:{self.settings.jardin_taille_rangee})
+F4      : Jardin - Changer le nombre d'actions total (défaut:{self.settings.jardin_nb_total})
  - Tests et positionnement
 F6      : Demie tour
 F10     : Lever / baisser le regard
@@ -544,7 +544,7 @@ Ctrl+C  : Quitter le script
 
 """)
         print(f"[i] Automate en cours : {self.looper.automate_en_cours.name}")
-        print(f"[i] Paramètrage Jardin : {os.linesep}{self.settings_jardin}")
+        print(f"[i] Paramètrage Jardin : {os.linesep}{self.settings}")
 
 program = Program()
 

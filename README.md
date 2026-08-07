@@ -92,7 +92,7 @@ Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris
 
 2. **Ajustement vertical :**  
    Ajustez `NOMBRE_PIXEL_QUART_TOUR_VERTICAL`  
-   *Test :* Appuyez sur <kbd>F10</kbd>. Le regard de votre personnage doit passer de l'horizon à ses pieds (approcximativement).
+   *Test :* Appuyez sur <kbd>F10</kbd>. Le regard de votre personnage doit passer de l'horizon à ses pieds (approximativement).
 
 3. **Bouton de réparation :**  
    Ajustez `POS_BTN_REPARER_X` et `POS_BTN_REPARER_Y`  
@@ -115,19 +115,21 @@ Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris
 2. Visez le sol juste devant vous.
 3. Appuyez sur <kbd>F6</kbd> pour faire un demi-tour : la forge doit être visée (le message *"Utiliser la forge"* doit apparaître).
 4. Appuyez de nouveau sur <kbd>F6</kbd> pour vous retourner face au mannequin.
-5. Équipez vos armes (slots `3` et `4`) et démarrez l'automate.
+5. Équipez vos armes (slots `3` et `4`).
+6. Démarrez l'automate via la touche <kbd>F8</kbd>.
 
 ---
 
 ### 🌱 Mode Farming du Jardin
 
 #### Préparation :
-1. Équipez-vous du **Cultivateur** (et sélectionnez le type de culture via le clic droit) ou de la **Faux**.
-2. Utilisez les touches de raccourci <kbd>F3</kbd> et <kbd>F4</kbd> pour régler :
-   - Le nombre d'actions par rangée.
-   - Le nombre total d'actions.
-3. Positionnez-vous au début de la rangée, visez approximativement la fin de la première rangée.
-4. Pour planter, appuyez sur <kbd>F10</kbd> afin que le personnage regarde à ses pieds.
+1. Équipez-vous du **Cultivateur** (et sélectionnez le type de culture via le clic droit) ou équipez-vous de la **Faux**.
+2. Utilisez les touches <kbd>F3</kbd> et <kbd>F4</kbd> pour régler :
+   - <kbd>F3</kbd> Le nombre d'actions par rangée.
+   - <kbd>F4</kbd> Le nombre total d'actions.
+3. Positionnez-vous au début de la rangée, visez approximativement la fin de la première rangée (la première rangée est celle de gauche : le premier demi-tour se fera dans le sens horaire).
+4. Appuyez sur <kbd>F10</kbd> afin que le personnage regarde à ses pieds.
+5. Démarrez l'automate via la touche <kbd>F8</kbd>.
 
 ---
 
@@ -148,7 +150,7 @@ Avant d'utiliser les automates, vous devez calibrer le déplacement de la souris
 
 # **Avancé**
 
-# Guide d'utilisation et d'extension des Automates Valheim
+# Guide d'extension des Automates Valheim
 
 Ce document explique comment les suites d'action sont enregistrées dans le script python et la méthode pas à pas pour en ajouter de nouvelles.
 
@@ -160,7 +162,7 @@ Les suites d'action sont structurées sous forme d'**automates** grâce à la cl
 
 * **`actions_pre`** : Actions d'initialisation exécutées **une seule fois** au lancement de l'automate.
 * **`actions_loop`** : Actions exécutées **en boucle principale** tant que l'automate est actif.
-* **`actions_post`** : Actions de nettoyage exécutées **une seule fois** à l'arrêt de l'automate.
+* **`actions_post`** : Actions de nettoyage exécutées **une seule fois** à l'arrêt de l'automate. Cette fonction s'exécutera toujours intégralement lorsque l'arrêt de l'automate est demandé.
 
 Dans le code, l'enregistrement se fait au niveau de la méthode `__build_automates()` au sein de la classe `Program` :
 
@@ -193,14 +195,14 @@ Si votre routine nécessite une action non encore couverte par le script, ajoute
 ```python
 def pecher(self):
     # Maintenir le clic gauche pendant 1 secondes pour lancer la ligne
-    self.inputs.cliquer(1.0)
+    self.inputs.cliquer(1)
 
 def equiper_canne(self):
-    # On équipe le premier item
+    # Equiper le premier item
     self.inputs.clavier_appuie(self.touche_item_1)
 
 def ramener_canne(self):
-    # Maintenir le clic droit pendant 5 secondes pour lancer la ligne
+    # Maintenir le clic droit pendant 5 secondes pour ramener la ligne
     self.inputs.souris_clic_droit(5)
 ```
 
@@ -238,3 +240,82 @@ def __build_automates(self):
 1. Lancez le script Python (`python automate_valheim.py`).
 2. Appuyez sur **F7** dans le jeu pour faire défiler les modes jusqu'à sélectionner votre nouvel automate (`[+] Changement de mode : Peche`).
 3. Appuyez sur **F8** pour **Démarrer / Arrêter** la boucle d'actions.
+
+## 3. Listes des méthodes et attributs disponibles depuis la méthode __build_automates :
+
+### self.actions.*
+Toutes les actions manipulants le clavier et la souris |
+
+### self.time.attendre
+Permet d'effectuer une pause (un "sleep") dans l'exécution du programme, tout en restant capable de l'interrompre immédiatement si l'utilisateur demande l'arrêt du script.
+
+### self.looper_controler.*
+Toutes les instructions dépendant du cadre d'exécution de l'automate ou qui le modifie |
+
+*Exemple :*
+```python
+self.actions.planter()
+```
+
+#### self.looper_controler.action_toutes_les_n_boucles
+Permet d'exécuter de manière conditionnelle une ou plusieurs actions selon le numéro de la boucle en cours.
+Liste des paramètres :
+ - n : La fréquence d'exécution (exécute "action" tous les n tours de boucle).
+ - action : La fonction principale à exécuter lorsque la condition est remplie.
+ - autoriser_premiere_boucle (optionnel, défaut: False) : Détermine si l'action a le droit d'être exécutée à la première itération.
+ - action_sinon (optionnel) : La fonction à exécuter si la condition n'est pas remplie.
+ - action_pre (optionnel) : Une fonction à exécuter juste avant la fonction principale "action".
+ - action_post (optionnel) : Une fonction à exécuter juste après l'action principale "action".
+
+*Exemple :*
+```python
+self.looper_controler.action_toutes_les_n_boucles(
+    self.settings.jardin_taille_rangee, 
+    action = lambda: self.actions.demi_tour_sens_alterne(1.8, 1.5), 
+    action_sinon = lambda: self.actions.avancer(1.1), 
+    action_pre = self.actions.activer_desactiver_marcher_lentement,  
+    action_post =  self.actions.activer_desactiver_marcher_lentement)
+```
+
+#### self.looper_controler.arreter_boucles
+ Permet l'arrêt de l'automate.
+ Cette action est prévue pour être utilisée conjointement avec "self.looper_controler.action_toutes_les_n_boucles" afin d'arrêter l'automate au bout d'un certain nombre de boucles.
+
+*Exemple :*
+```python
+self.looper_controler.action_toutes_les_n_boucles(
+    self.settings.jardin_nb_total, 
+    action = self.looper_controler.arreter_boucles)
+```
+
+### self.settings.*
+ Ce sont les paramètres permettant d'ajuster, par exemple, la taille du jardin à planter sans avoir à modifier et redémarrer le script.
+ Pour ajouter un paramètre, ajoutez-le dans la classe Settings. Ils sera accessible via "self.settings.nom_du_nouveau_parametre" dans la classe Program.
+ Ajoutez une méthode pour le modifier (via un cycle par exemple)
+
+*Exemple :*
+- Dans la classe Settings, on créé un paramètre jardin_taille_rangee et un cycle (le cycle prend en paramètre toutes les valeurs possibles du paramètre afin de pouvoir passer d'une valeur à l'autre) :
+```python
+self.jardin_taille_rangee = 30
+self.cycleur_jardin_rangee = cycle([3,5,10,15,20,30,50])
+```
+
+- Dans la classe Settings on créé une méthode pour modifier jardin_taille_rangee :
+```python
+def changer_taille_rangee(self):
+    self.jardin_taille_rangee = next(self.cycleur_jardin_rangee)
+```
+
+- Dans la classe Program, on lit le paramètre jardin_taille_rangee (dans la méthode __build_automates) :
+```python
+self.looper_controler.action_toutes_les_n_boucles(
+    self.settings.jardin_taille_rangee, 
+    action = self.actions.demi_tour_sens_alterne)
+```
+
+- Dans la classe Program, on modifie la valeur du paramètre jardin_taille_rangee (dans la méthode on_keyboard_press) :
+```python
+elif key == Key.f3:
+    self.settings.changer_taille_rangee()
+    print(f"[i] Changer la taille des rangées : {self.settings.jardin_taille_rangee}")
+```
