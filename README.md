@@ -51,7 +51,7 @@ Utilisez les scripts fournis à la racine du projet selon votre système d'explo
 
 *Alternativement, vous pouvez lancer le script directement via `uv` :*
 ```bash
-uv run main.py
+uv run automate_valheim.py
 ```
 
 ---
